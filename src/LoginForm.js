@@ -12,7 +12,7 @@ const LoginForm = () => {
         e.preventDefault();
         try {
             const response = await axios.post("http://localhost:8000/login", { email, password });
-            if (response.data === "exists") {
+            if (response.data.userId) {
                 navigate('/todo-list', { state: { userId: response.data.userId } });
             } else if (response.data === "notexist") {
                 alert("User is not signed in");

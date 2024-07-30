@@ -19,9 +19,9 @@ app.post("/login", async (req, res) => {
     try {
         const user = await User.findOne({ email: email });
         if (user) {
-            res.json({ userId: user._id });
+            return res.json({ userId: user._id });
         } else {
-            res.json("notexist");
+            return res.json("notexist");
         }
     } catch (e) {
         console.error(e);
@@ -42,11 +42,11 @@ app.post("/signup", async (req, res) => {
     try {
         const existingUser = await User.findOne({ email: email });
         if (existingUser) {
-            res.json("exists");
+            return res.json("exists");
         }
         const newUser = new User({ email: email, password: password });
         const savedUser = await newUser.save();
-        res.status(201).json({ userId: savedUser._id });
+        return res.status(201).json({ userId: savedUser._id });
     } catch (e) {
         console.error(e);
         return res.status(500).json("error");
