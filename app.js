@@ -43,10 +43,10 @@ app.post("/signup", async (req, res) => {
         const check = await collection.findOne({ email: email });
         if (check) {
             res.json("exists");
-        } else {
-            await collection.insertMany([data]);
-            res.json("notexist");
         }
+        const newUser = new User({ email: email, password: password });
+        const savedUser = await newUser.save();
+        res.status(201).json({ userId: savedUser._id });
     } catch (e) {
         console.error(e);
         res.json("error");
