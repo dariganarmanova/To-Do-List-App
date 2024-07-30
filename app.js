@@ -53,6 +53,10 @@ app.post("/signup", async (req, res) => {
     }
 });
 
+const router = require("./routes");
+app.use(router);
+
+
 app.listen(8000, () => {
-    console.log("Server is running on port 8001");
+    console.log("Server is running on port 8000");
 });
