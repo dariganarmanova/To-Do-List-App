@@ -15,7 +15,7 @@ async function connectToDatabase() {
 // Call the function to connect to the database
 connectToDatabase();
 
-const newSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true
@@ -26,6 +26,23 @@ const newSchema = new mongoose.Schema({
     }
 });
 
-const collection = mongoose.model('collection', newSchema);
+const todoSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    completed: {
+        type: Boolean,
+        default: false
+    }
+});
 
-module.exports = { connectToDatabase, collection };
+const User = mongoose.model('User', userSchema);
+const ToDo = mongoose.model('ToDo', todoSchema)
+
+module.exports = { connectToDatabase, User, ToDo };
