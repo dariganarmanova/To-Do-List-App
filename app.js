@@ -1,5 +1,5 @@
 const express = require('express');
-const { connectToDatabase, collection } = require('./mongo');
+const { connectToDatabase, User } = require('./mongo');
 const cors = require('cors');
 
 const app = express();
@@ -17,15 +17,15 @@ app.get("/login", cors(), (req, res) => {
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
     try {
-        const check = await collection.findOne({ email: email });
-        if (check) {
-            res.json("exists");
+        const user = await User.findOne({ email: email });
+        if (user) {
+            res.json({ userId: user._id });
         } else {
             res.json("notexist");
         }
     } catch (e) {
         console.error(e);
-        res.json("error");
+        return res.status(500).json("error");
     }
 });
 
@@ -40,8 +40,8 @@ app.post("/signup", async (req, res) => {
         password: password
     };
     try {
-        const check = await collection.findOne({ email: email });
-        if (check) {
+        const existingUser = await User.findOne({ email: email });
+        if (existingUser) {
             res.json("exists");
         }
         const newUser = new User({ email: email, password: password });
@@ -49,7 +49,7 @@ app.post("/signup", async (req, res) => {
         res.status(201).json({ userId: savedUser._id });
     } catch (e) {
         console.error(e);
-        res.json("error");
+        return res.status(500).json("error");
     }
 });
 

@@ -13,7 +13,6 @@ async function connectToDatabase() {
 }
 
 // Call the function to connect to the database
-connectToDatabase();
 
 const userSchema = new mongoose.Schema({
     email: {

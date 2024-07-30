@@ -14,8 +14,8 @@ const SignUpForm = () => {
             const response = await axios.post("http://localhost:8000/signup", { email, password });
             if (response.data === "exists") {
                 alert("User already exists");
-            } else if (response.data === "notexist") {
-                navigate('/todo-list', { state: { id: email } });
+            } else if (response.data.userId) {
+                navigate('/todo-list', { state: { userId: response.data.userId } });
             }
         } catch (error) {
             alert("Error occurred");
