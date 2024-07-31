@@ -1,23 +1,27 @@
 const express = require('express');
 const { connectToDatabase, User } = require('./mongo');
 const cors = require('cors');
+const todoRoutes = require('./routes'); // Import routes
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000', // Your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type']
+}));
 
 // Connect to the database
 connectToDatabase();
 
-app.get("/login", cors(), (req, res) => {
-    // Placeholder for login route
-});
+app.use('/todo-list', todoRoutes); // Mount routes under /todo-list
 
+// Login routes
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
     try {
-        const user = await User.findOne({ email: email });
+        const user = await User.findOne({ email });
         if (user) {
             return res.json({ userId: user._id });
         } else {
@@ -29,22 +33,15 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.get("/signup", cors(), (req, res) => {
-    // Placeholder for signup route
-});
-
+// Signup routes
 app.post("/signup", async (req, res) => {
     const { email, password } = req.body;
-    const data = {
-        email: email,
-        password: password
-    };
     try {
-        const existingUser = await User.findOne({ email: email });
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.json("exists");
         }
-        const newUser = new User({ email: email, password: password });
+        const newUser = new User({ email, password });
         const savedUser = await newUser.save();
         return res.status(201).json({ userId: savedUser._id });
     } catch (e) {
@@ -52,10 +49,6 @@ app.post("/signup", async (req, res) => {
         return res.status(500).json("error");
     }
 });
-
-const router = require("./routes");
-app.use(router);
-
 
 app.listen(8000, () => {
     console.log("Server is running on port 8000");

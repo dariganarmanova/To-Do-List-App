@@ -43,14 +43,15 @@ const MainPage = () => {
         }
     };
 
-    const updateToDo = async (id, newTitle) => {
+    const updateToDo = async (id, updatedData) => {
         try {
-            const response = await axios.put(`http://localhost:8000/todo-list/${id}`, { title: newTitle });
-            setToDos(toDos.map(todo => (todo._id === id ? response.data : todo)));
+            const response = await axios.put(`http://localhost:8000/todo-list/${id}`, updatedData);
+            console.log('Update successful:', response.data);
         } catch (error) {
-            console.error("Error updating to-do item", error);
+            console.error('Error updating to-do item:', error);
         }
     };
+
 
     return (
         <div className="todo-list">

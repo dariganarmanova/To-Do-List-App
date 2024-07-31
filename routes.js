@@ -2,17 +2,19 @@ const express = require("express");
 const router = express.Router();
 const { ToDo } = require('./mongo');
 
-router.get("/todo-list/:userId", async (req, res) => {
+// Get all to-dos for a user
+router.get("/:userId", async (req, res) => {
     const { userId } = req.params;
     try {
-        const todos = await ToDo.find({ userId })
-        res.status(200).json(todos)
+        const todos = await ToDo.find({ userId });
+        res.status(200).json(todos);
     } catch (error) {
-        res.status(500).json({ message: "error retrieving the to-do item" }, error)
+        res.status(500).json({ message: "Error retrieving to-do items", error });
     }
-})
+});
 
-router.post("/todo-list", async (req, res) => {
+// Create a new to-do item
+router.post("/", async (req, res) => {
     const { userId, title } = req.body;
     const newToDo = new ToDo({
         userId,
@@ -20,35 +22,44 @@ router.post("/todo-list", async (req, res) => {
     });
     try {
         const saveToDo = await newToDo.save();
-        res.status(200).json(saveToDo)
+        res.status(201).json(saveToDo);
     } catch (error) {
-        res.status(500).json({ message: "error saving the to-do item", error })
+        res.status(500).json({ message: "Error saving to-do item", error });
     }
-})
+});
 
-router.delete("/todo-list/:id", async (req, res) => {
+// Delete a to-do item
+router.delete("/:id", async (req, res) => {
     try {
         const deletedItem = await ToDo.findByIdAndDelete(req.params.id);
         if (!deletedItem) {
-            return res.status(404).json({ message: "item not found" })
+            return res.status(404).json({ message: "Item not found" });
         }
-        res.status(200).json(deletedItem)
+        res.status(200).json(deletedItem);
     } catch (error) {
-        res.status(500).json({ message: "could not delete the item", error })
+        res.status(500).json({ message: "Could not delete the item", error });
     }
-})
+});
 
-router.put("/todo-list/:id", async (req, res) => {
-    const { title, completed } = req.body;
+// Update a to-do item
+router.put("/:id", async (req, res) => {
     try {
-        const updateToDo = await ToDo.findByIdAndUpdate(req.params.id, { title, completed }, { new: true })
-        if (!updateToDo) {
-            return res.status(404).json({ message: "could not find the item", error })
+        const { id } = req.params;
+        const { title, completed } = req.body; // Assuming you're updating title and completed status
+        const todo = await ToDo.findByIdAndUpdate(
+            id,
+            { title, completed },
+            { new: true } // Return the updated document
+        );
+        if (todo) {
+            res.json(todo);
+        } else {
+            res.status(404).json({ error: 'To-do not found' });
         }
-        res.status(500).json(updateToDo)
     } catch (error) {
-        res.status(501).json({ message: "failed to update the item" })
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
     }
-})
+});
 
-module.exports = router; 
+module.exports = router;
