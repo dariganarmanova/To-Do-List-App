@@ -7,7 +7,7 @@ const MainPage = () => {
     const [title, setTitle] = useState('');
     const location = useLocation();
     const userId = location.state?.userId || "";
-
+    //performing side effects for setodos
     useEffect(() => {
         const fetchToDos = async () => {
             try {
@@ -71,7 +71,12 @@ const MainPage = () => {
                     <li key={todo._id}>
                         <span>{todo.title}</span>
                         <button onClick={() => deleteToDo(todo._id)}>Delete</button>
-                        <button onClick={() => updateToDo(todo._id, prompt("New title:", todo.title))}>Update</button>
+                        <button onClick={() => {
+                            const newTitle = prompt("New title:", todo.title);
+                            if (newTitle) {
+                                updateToDo(todo._id, newTitle);
+                            }
+                        }}>Update</button>
                     </li>
                 ))}
             </ul>
