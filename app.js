@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: 'http://localhost:3000', // Your frontend URL
+    origin: 'http://localhost:3000',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type']
 }));
@@ -35,7 +35,7 @@ app.post("/login", async (req, res) => {
 
 // Signup routes
 app.post("/signup", async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.body; //this is the data we are received
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
