@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from 'axios';
 import './mainpage.css';
+
 const MainPage = () => {
     const [toDos, setToDos] = useState([]);
     const [title, setTitle] = useState('');
     const location = useLocation();
     const userId = location.state?.userId || "";
-    //performing side effects for setodos
+
     useEffect(() => {
         const fetchToDos = async () => {
             try {
@@ -43,15 +44,14 @@ const MainPage = () => {
         }
     };
 
-    const updateToDo = async (id, updatedData) => {
+    const updateToDo = async (id, newTitle) => {
         try {
-            const response = await axios.put(`http://localhost:8000/todo-list/${id}`, updatedData);
-            console.log('Update successful:', response.data);
+            const response = await axios.put(`http://localhost:8000/todo-list/${id}`, { title: newTitle });
+            setToDos(toDos.map(todo => (todo._id === id ? response.data : todo)));
         } catch (error) {
             console.error('Error updating to-do item:', error);
         }
     };
-
 
     return (
         <div className="todo-list">
@@ -64,19 +64,19 @@ const MainPage = () => {
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Add new to do"
                 />
-                <button type="submit">Add new To Do</button>
+                <button type="submit" className="add">Add new To Do</button>
             </form>
             <ul>
                 {toDos.map(todo => (
                     <li key={todo._id}>
                         <span>{todo.title}</span>
-                        <button onClick={() => deleteToDo(todo._id)}>Delete</button>
+                        <button onClick={() => deleteToDo(todo._id)} className="delete">Delete</button>
                         <button onClick={() => {
                             const newTitle = prompt("New title:", todo.title);
                             if (newTitle) {
                                 updateToDo(todo._id, newTitle);
                             }
-                        }}>Update</button>
+                        }} className="update">Update</button>
                     </li>
                 ))}
             </ul>

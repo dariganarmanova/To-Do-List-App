@@ -1,3 +1,5 @@
+/* mainpage.css */
+
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
@@ -49,15 +51,15 @@ button {
 }
 
 button.add {
-  background-color: #ff69b4; /* Pink */
+  background-color: #ff69b4 !important; /* Pink */
 }
 
 button.update {
-  background-color: #6a0dad; /* Purple */
+  background-color: #9370db !important; /* Medium Purple */
 }
 
 button.delete {
-  background-color: #ff4500; /* Orange */
+  background-color: #ff4500 !important; /* Orange Red */
 }
 
 button:hover {
